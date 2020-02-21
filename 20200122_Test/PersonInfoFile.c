@@ -223,66 +223,88 @@ void ClearPresonInfo(AddressBook* addr_book){       //-----清除全部-----
 	printf("成功清除所有联系人!\n");
 }
 void ReadPersonInfo(AddressBook* addr_book){
-  FILE* fp = fopen("./addr_book.txt", "r");
-  if(fp == NULL){
-    perror("fopen");
-    return;
+//  FILE* fp = fopen("./addr_book.txt", "r");
+//  if(fp == NULL){
+//    perror("fopen");
+//    return;
+//  }
+//
+//  PersonInfo* p = &addr_book->infos[0];
+//  char str[4000] = {0};
+//  fgets(str, 4000, fp);
+//  char* pch;
+//  pch = strtok(str, "\t");
+//  int i = 0;
+//  while(pch != NULL){
+//    if(i == 0)
+//      strcpy(p->name, pch);
+//    if(i == 1)
+//      strcpy(p->gender, pch);
+//    if(i == 2)
+//      sscanf(pch, "%d", &p->age);
+//    if(i == 3)
+//      strcpy(p->phone, pch);
+//    if(i == 4)
+//      strcpy(p->adder, pch);
+//    pch = strtok(NULL, "\t");
+//    ++i;
+//  }
+//
+//  fclose(fp);
+  assert(addr_book != NULL);
+  FILE *fp = fopen("./addr_book.txt", "rb");
+  Init(addr_book);
+  while (fread((addr_book->infos + (addr_book->size)), sizeof(PersonInfo), 1, fp) == 1)
+  {
+    addr_book->size++;
+    if (addr_book->size == addr_book->capacity)
+    {
+      Realloc(addr_book);
+    }
   }
-
-  PersonInfo* p = &addr_book->infos[0];
-  char str[4000] = {0};
-  fgets(str, 4000, fp);
-  char* pch;
-  pch = strtok(str, "\t");
-  int i = 0;
-  while(pch != NULL){
-    if(i == 0)
-      strcpy(p->name, pch);
-    if(i == 1)
-      strcpy(p->gender, pch);
-    if(i == 2)
-      sscanf(pch, "%d", &p->age);
-    if(i == 3)
-      strcpy(p->phone, pch);
-    if(i == 4)
-      strcpy(p->adder, pch);
-    pch = strtok(NULL, "\t");
-    ++i;
-  }
-
   fclose(fp);
-
   PrintAllPresonInfo(addr_book);    
 }
 void SavePersonInfo(AddressBook* addr_book){
-  FILE* fp = fopen("./addr_book.txt", "w");
-  if(fp == NULL){
-    perror("fopen");
-    return;
+//  FILE* fp = fopen("./addr_book.txt", "w");
+//  if(fp == NULL){
+//    perror("fopen");
+//    return;
+//  }
+//
+//  int i = 0;
+//  for(; i < addr_book->size; ++i){
+//    PersonInfo* p = &addr_book->infos[i];
+//    //fwrite(p->name, 1, 1024, fp);
+//    fputs(p->name, fp);    
+//    fputs("\t", fp);    
+//    //fwrite(p->gender, 1, 10, fp);
+//    fputs(p->gender, fp);    
+//    fputs("\t", fp);    
+//    char str[1024] = {0};
+//    sprintf(str, "%d", p->age);
+//    fputs(str, fp);
+//    fputs("\t", fp);    
+//    //fwrite(p->phone, 1, 1024, fp);
+//    fputs(p->phone, fp);    
+//    fputs("\t", fp);    
+//    //fwrite(p->adder, 1, 1024, fp);
+//    fputs(p->adder, fp);    
+//    //fwrite("\n", 1, 1, fp);
+//    fputs("\n", fp);    
+//  }
+//  
+//  fclose(fp);
+  assert(addr_book != NULL);
+  FILE *fp = fopen("./addr_book.txt", "wb");
+  int count = 0;
+  while(count != addr_book->size){
+    if(fwrite(addr_book->infos, sizeof(PersonInfo), 1, fp) != 1){
+      break;
+    }
+    addr_book->infos++;
+    count++;                  
   }
-
-  int i = 0;
-  for(; i < addr_book->size; ++i){
-    PersonInfo* p = &addr_book->infos[i];
-    //fwrite(p->name, 1, 1024, fp);
-    fputs(p->name, fp);    
-    fputs("\t", fp);    
-    //fwrite(p->gender, 1, 10, fp);
-    fputs(p->gender, fp);    
-    fputs("\t", fp);    
-    char str[1024] = {0};
-    sprintf(str, "%d", p->age);
-    fputs(str, fp);
-    fputs("\t", fp);    
-    //fwrite(p->phone, 1, 1024, fp);
-    fputs(p->phone, fp);    
-    fputs("\t", fp);    
-    //fwrite(p->adder, 1, 1024, fp);
-    fputs(p->adder, fp);    
-    //fwrite("\n", 1, 1, fp);
-    fputs("\n", fp);    
-  }
-  
   fclose(fp);
 }
 
